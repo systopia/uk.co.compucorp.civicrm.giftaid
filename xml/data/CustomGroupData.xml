@@ -14,12 +14,6 @@
       <is_active>1</is_active>
     </OptionGroup>
     <OptionGroup>
-      <name>eligibility_declaration_options</name>
-      <title>Eligibility Declaration Options</title>
-      <label>Eligibility Declaration Options</label>
-      <is_active>1</is_active>
-    </OptionGroup>
-    <OptionGroup>
       <title>UK Taxpayer Options</title>
       <name>uk_taxpayer_options</name>
       <label>UK Taxpayer Options</label>
@@ -34,40 +28,7 @@
       <is_active>1</is_active>
     </OptionGroup>
     </OptionGroups>
-      <OptionValues>
-        <OptionValue>
-        <label>Yes</label>
-        <value>1</value>
-        <name>eligible_for_giftaid</name>
-        <is_default>0</is_default>
-        <weight>1</weight>
-        <is_optgroup>0</is_optgroup>
-        <is_reserved>0</is_reserved>
-        <is_active>1</is_active>
-        <option_group_name>eligibility_declaration_options</option_group_name>
-      </OptionValue>
-      <OptionValue>
-        <label>No</label>
-        <value>0</value>
-        <name>not_eligible_for_giftaid</name>
-        <is_default>0</is_default>
-        <weight>2</weight>
-        <is_optgroup>0</is_optgroup>
-        <is_reserved>0</is_reserved>
-        <is_active>1</is_active>
-        <option_group_name>eligibility_declaration_options</option_group_name>
-      </OptionValue>
-      <OptionValue>
-        <label>Yes, in the Past 4 Years</label>
-        <value>3</value>
-        <name>past_four_years</name>
-        <is_default>0</is_default>
-        <weight>3</weight>
-        <is_optgroup>0</is_optgroup>
-        <is_reserved>0</is_reserved>
-        <is_active>1</is_active>
-        <option_group_name>eligibility_declaration_options</option_group_name>
-      </OptionValue>
+    <OptionValues>
       <OptionValue>
         <label>Yes</label>
         <value>1</value>
@@ -91,9 +52,20 @@
         <option_group_name>uk_taxpayer_options</option_group_name>
       </OptionValue>
       <OptionValue>
-        <label>Yes, in the Past 4 Years</label>
+        <label>Only today</label>
+        <value>2</value>
+        <name>one_time</name>
+        <is_default>0</is_default>
+        <weight>2</weight>
+        <is_optgroup>0</is_optgroup>
+        <is_reserved>0</is_reserved>
+        <is_active>1</is_active>
+        <option_group_name>uk_taxpayer_options</option_group_name>
+      </OptionValue>
+      <OptionValue>
+        <label>Yes, for the future and the Past 4 Years</label>
         <value>3</value>
-        <name>uk_taxpayer_past_four_years</name>
+        <name>futu_past_four_years</name>
         <is_default>0</is_default>
         <weight>3</weight>
         <is_optgroup>0</is_optgroup>
@@ -172,7 +144,7 @@
   <CustomFields>
     <CustomField>
       <name>Eligible_for_Gift_Aid</name>
-      <label>UK Tax Payer?</label>
+      <label>Can we claim Gift Aid on your donations?</label>
       <data_type>Int</data_type>
       <html_type>Radio</html_type>
       <is_required>1</is_required>
@@ -332,20 +304,19 @@
     <CustomField>
       <name>Eligible_for_Gift_Aid</name>
       <label>Eligible for Gift Aid?</label>
-      <data_type>Int</data_type>
+      <data_type>Boolean</data_type>
       <html_type>Radio</html_type>
-      <is_required>1</is_required>
+      <is_required>0</is_required>
       <is_searchable>1</is_searchable>
       <is_search_range>0</is_search_range>
       <default_value>1</default_value>
       <weight>1</weight>
       <is_active>1</is_active>
-      <is_view>0</is_view>
+      <is_view>1</is_view>
       <text_length>255</text_length>
       <note_columns>60</note_columns>
       <note_rows>4</note_rows>
       <column_name>eligible_for_gift_aid</column_name>
-      <option_group_name>eligibility_declaration_options</option_group_name>
       <custom_group_name>Gift_Aid</custom_group_name>
     </CustomField>
     <CustomField>
@@ -417,7 +388,7 @@
   </ProfileGroups>
   <ProfileFields>
     <ProfileField>
-      <field_name>custom.civicrm_value_gift_aid_submission.eligible_for_gift_aid</field_name>
+      <field_name>custom.civicrm_value_gift_aid_declaration.eligible_for_gift_aid</field_name>
       <is_active>1</is_active>
       <is_view>0</is_view>
       <is_required>1</is_required>
@@ -433,7 +404,7 @@
       <in_selector>0</in_selector>
       <is_searchable>0</is_searchable>
       <label>Can we reclaim gift aid on your donation?</label>
-      <field_type>Contribution</field_type>
+      <field_type>Individual</field_type>
       <profile_group_name>Gift_Aid</profile_group_name>
     </ProfileField>
     <ProfileField>
