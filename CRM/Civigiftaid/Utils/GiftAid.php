@@ -121,11 +121,6 @@ class CRM_Civigiftaid_Utils_GiftAid {
           $isEligible = FALSE;
         }
 
-        // check if already submitted
-        if ($isEligible && isset($contributionID)) {
-          $isEligible = !self::isContributionSubmitted($contributionID);
-        }
-        
         // hook can alter the eligibility if needed
         CRM_Civigiftaid_Utils_Hook::giftAidEligible( $isEligible, $contactID, $date, $contributionID );
 
@@ -443,17 +438,5 @@ class CRM_Civigiftaid_Utils_GiftAid {
       }
 
       return $submittedContributions;
-    }
-
-    static function isContributionSubmitted($contributionID) {
-      $sql = "SELECT * FROM civicrm_value_gift_aid_submission where entity_id = %1";
-      $sqlParams = array( 1 => array($contributionID, 'Integer') );
-
-      $dao = CRM_Core_DAO::executeQuery( $sql, $sqlParams );
-
-      if(!count($dao->fetchAll())) {
-        return FALSE;
-      }
-      return TRUE;
     }
 }
