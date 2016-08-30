@@ -123,7 +123,7 @@ class CRM_Civigiftaid_Utils_GiftAid {
 
         // check if already submitted
         if ($isEligible && isset($contributionID)) {
-          $isEligible = self::isContributionSubmitted($contributionID);
+          $isEligible = !self::isContributionSubmitted($contributionID);
         }
         
         // hook can alter the eligibility if needed
