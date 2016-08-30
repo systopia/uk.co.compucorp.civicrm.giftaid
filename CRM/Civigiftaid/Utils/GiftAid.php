@@ -113,15 +113,19 @@ class CRM_Civigiftaid_Utils_GiftAid {
                                                 array( 1 => array( $contributionID, 'Integer' ) ) );
         }
 
+        // check if we have a declaration
         $declaration = self::getDeclaration( $contactID, $date, $charity );
-
         if (isset($declaration['eligible_for_gift_aid'])) {
-	  $isEligible  = ( $declaration['eligible_for_gift_aid'] == 1 || $declaration['eligible_for_gift_aid'] == 3 );
+          $isEligible = ( $declaration['eligible_for_gift_aid'] == 1 || $declaration['eligible_for_gift_aid'] == 3 );
+        } else {
+          $isEligible = FALSE;
         }
 
-        if(isset($contributionID)) {
+        // check if already submitted
+        if ($isEligible && isset($contributionID)) {
           $isEligible = self::isContributionSubmitted($contributionID);
         }
+        
         // hook can alter the eligibility if needed
         CRM_Civigiftaid_Utils_Hook::giftAidEligible( $isEligible, $contactID, $date, $contributionID );
 
