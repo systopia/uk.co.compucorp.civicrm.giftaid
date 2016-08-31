@@ -366,16 +366,13 @@ function civigiftaid_civicrm_validate($formName, &$fields, &$files, &$form) {
   }
 }
 
-function civigiftaid_civicrm_giftAidEligible(
-  &$isEligible,
-  $contactId,
-  $date,
-  $contributionId
-) {
+function civigiftaid_civicrm_giftAidEligible(&$isEligible, $contactId, $date, $contributionId) {
   if (!CRM_Civigiftaid_Form_Admin::isGloballyEnabled()) {
-    if($isEligible != 0){
-     $isEligible =
-       CRM_Civigiftaid_Utils_Contribution::getContribAmtForEnabledFinanceTypes($contributionId) != 0;
+    if ($isEligible) {
+      if (CRM_Civigiftaid_Utils_Contribution::getContribAmtForEnabledFinanceTypes($contributionId) <= 0) {
+        $isEligible = FALSE;
+        CRM_Civigiftaid_Utils_Rejection::setRejectionReason($contributionId, "Financial type not eligible");
+      }
     }
   }
 }
