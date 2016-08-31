@@ -106,6 +106,7 @@ class CRM_Civigiftaid_Utils_GiftAid {
 
     static function isEligibleForGiftAid( $contactID, $date = null, $contributionID = null ) {
         $charity = null;
+        $isEligible = FALSE;
         if ( $contributionID &&
              CRM_Core_DAO::checkFieldExists( 'civicrm_value_gift_aid_submission', 'charity' ) ) {
             $charity =
@@ -116,9 +117,13 @@ class CRM_Civigiftaid_Utils_GiftAid {
         // check if we have a declaration
         $declaration = self::getDeclaration( $contactID, $date, $charity );
         if (isset($declaration['eligible_for_gift_aid'])) {
-          $isEligible = ( $declaration['eligible_for_gift_aid'] == 1 || $declaration['eligible_for_gift_aid'] == 3 );
+          if ( $declaration['eligible_for_gift_aid'] == 1 || $declaration['eligible_for_gift_aid'] == 3 ) {
+            $isEligible = TRUE;
+          } else {
+            CRM_Civigiftaid_Utils_Rejection::setRejectionReason($contributionID, "Not a UK taxpayer");
+          }
         } else {
-          $isEligible = FALSE;
+          CRM_Civigiftaid_Utils_Rejection::setRejectionReason($contributionID, "No valid GA declaration");
         }
 
         // hook can alter the eligibility if needed

@@ -80,6 +80,9 @@ class CRM_Civigiftaid_Form_Task_AddToBatch extends CRM_Contribute_Form_Task {
     $contributionsNotValid =
       CRM_Civigiftaid_Utils_Contribution::getContributionDetails($notValid);
     $this->assign('contributionsNotValid', $contributionsNotValid);
+
+    // add rejection reasons
+    $this->assign('rejectionReasons', CRM_Civigiftaid_Utils_Rejection::getAllRejectionReasons());
   }
 
   /**

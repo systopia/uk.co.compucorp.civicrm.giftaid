@@ -162,6 +162,7 @@
                         <th>{ts}Type{/ts}</th>
                         <th>{ts}Source{/ts}</th>
                         <th>{ts}Received{/ts}</th>
+                        <th>{ts}Reason{/ts}</th>
                     </tr>
                     </thead>
                     {foreach from=$contributionsNotValid item=row}
@@ -175,6 +176,7 @@
                             <td>{$row.financial_account}</td>
                             <td>{$row.source}</td>
                             <td>{$row.receive_date}</td>
+                            <td>{assign var=contribution_id value=$row.contribution_id}{$rejectionReasons.$contribution_id}</td>
                         </tr>
                         <tr class="line-items-container">
                             <td colspan="7">
