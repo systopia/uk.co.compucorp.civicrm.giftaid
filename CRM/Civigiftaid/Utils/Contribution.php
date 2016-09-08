@@ -100,15 +100,7 @@ class CRM_Civigiftaid_Utils_Contribution {
 
       // check if the selected contribution id already in a batch
       // if not, add to batchContribution else keep the count of contributions that are not added
-      $query = "SELECT civicrm_batch.id
-                  FROM civicrm_entity_batch 
-                  LEFT JOIN civicrm_batch ON civicrm_entity_batch.batch_id = civicrm_batch.id 
-                  WHERE civicrm_entity_batch.entity_id = %1
-                    AND civicrm_entity_batch.entity_table = 'civicrm_contribution'
-                    AND civicrm_batch.type_id = %2";
-      $ga_batch_id = CRM_Core_DAO::singleValueQuery($query, array(
-        1 => array($contributionID, 'Integer'),
-        2 => array($giftAidBatchType, 'Integer')));
+      $ga_batch_id = self::getGiftAidBatch($contributionID);
 
       if ($ga_batch_id) {
         $contributionsNotAdded[] = $contributionID;
@@ -349,16 +341,13 @@ class CRM_Civigiftaid_Utils_Contribution {
     $contributionsToRemove = array();
 
     foreach ($contributionIDs as $contributionID) {
-
-      $batchContribution =& new CRM_Batch_DAO_EntityBatch();
-      $batchContribution->entity_table = 'civicrm_contribution';
-      $batchContribution->entity_id = $contributionID;
-
       // check if the selected contribution id is in a batch
-      if ($batchContribution->find(TRUE)) {
+      $ga_batch_id = self::getGiftAidBatch($contributionID);
+
+      if ($ga_batch_id) {
         if (self::isOnlineSubmissionExtensionInstalled()) {
 
-          if (self::isBatchAlreadySubmited($batchContribution->batch_id)) {
+          if (self::isBatchAlreadySubmited($ga_batch_id)) {
             $contributionsAlreadySubmited[] = $contributionID;
           }
           else {
@@ -402,13 +391,13 @@ class CRM_Civigiftaid_Utils_Contribution {
     require_once "CRM/Contribute/BAO/Contribution.php";
 
     foreach ($contributionIDs as $contributionID) {
-      $batchContribution =& new CRM_Batch_DAO_EntityBatch();
-      $batchContribution->entity_table = 'civicrm_contribution';
-      $batchContribution->entity_id = $contributionID;
+
+      // check if the selected contribution id is in a batch
+      $ga_batch_id = self::getGiftAidBatch($contributionID);
 
       // check if the selected contribution id already in a batch
       // if not, increment $numContributionsAdded else keep the count of contributions that are already added
-      if (!$batchContribution->find(TRUE)) {
+      if (!$ga_batch_id) {
         // get contact_id, & contribution receive date from Contribution using contribution id
         $params = array('id' => $contributionID);
         CRM_Contribute_BAO_Contribution::retrieve($params, $defaults, $ids);
@@ -625,5 +614,24 @@ class CRM_Civigiftaid_Utils_Contribution {
     return CRM_Civigiftaid_Form_Admin::isGloballyEnabled()
       ? $contributionAmt
       : static::getContribAmtForEnabledFinanceTypes($contributionID);
+  }
+
+
+  /**
+   * get the GiftAid batch id the contribution belongs to
+   */
+  private static function getGiftAidBatch($contributionID) {
+    $giftAidBatchType = CRM_Civigiftaid_Utils_GiftAid::getBatchType();
+    $query = "SELECT civicrm_batch.id
+                FROM civicrm_entity_batch 
+                LEFT JOIN civicrm_batch ON civicrm_entity_batch.batch_id = civicrm_batch.id 
+                WHERE civicrm_entity_batch.entity_id = %1
+                  AND civicrm_entity_batch.entity_table = 'civicrm_contribution'
+                  AND civicrm_batch.type_id = %2";
+    $ga_batch_id = CRM_Core_DAO::singleValueQuery($query, array(
+      1 => array($contributionID, 'Integer'),
+      2 => array($giftAidBatchType, 'Integer')));
+
+    return $ga_batch_id;
   }
 }
