@@ -120,6 +120,10 @@ class CRM_Civigiftaid_Utils_Contribution {
           $contributionID
         ) AND $contribution['contribution_status_id'] == 1
       ) {
+        // add to batch
+        $batchContribution =& new CRM_Batch_DAO_EntityBatch();
+        $batchContribution->entity_table = 'civicrm_contribution';
+        $batchContribution->entity_id = $contributionID;
         $batchContribution->batch_id = $batchID;
         $batchContribution->save();
 
