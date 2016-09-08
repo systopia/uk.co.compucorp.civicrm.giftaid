@@ -446,4 +446,26 @@ class CRM_Civigiftaid_Utils_GiftAid {
 
       return $submittedContributions;
     }
+
+    /**
+     * Will return the type_id of the GiftAid batches
+     */
+    public static function getBatchType() {
+      $type_id = CRM_Core_OptionGroup::getValue('batch_type', 'GiftAid', 'name');
+      if (empty($type_id)) {
+        // the group doesn't exist yet? Create!
+        civicrm_api3('OptionValue', 'create', array(
+          'option_group_id' => 'batch_type',
+          'name'            => 'GiftAid',
+          'label'           => 'GiftAid',
+          'is_active'       => 1));
+        $type_id = CRM_Core_OptionGroup::getValue('batch_type', 'GiftAid', 'name');
+      }
+
+      if /*still*/ (empty($type_id)) {
+        throw new Exception("Cannot find/create GiftAid batch type.", 1);
+      }
+
+      return $type_id;
+    }
 }

@@ -94,16 +94,23 @@ class CRM_Civigiftaid_Utils_Contribution {
       'charity'
     );
 
+    $giftAidBatchType = CRM_Civigiftaid_Utils_GiftAid::getBatchType();
+
     foreach ($contributionIDs as $contributionID) {
-      //$batchContribution =& new CRM_Core_DAO_EntityBatch( );
-      $batchContribution =& new CRM_Batch_DAO_EntityBatch();
-      $batchContribution->entity_table = 'civicrm_contribution';
-      $batchContribution->entity_id = $contributionID;
 
       // check if the selected contribution id already in a batch
       // if not, add to batchContribution else keep the count of contributions that are not added
+      $query = "SELECT civicrm_batch.id
+                  FROM civicrm_entity_batch 
+                  LEFT JOIN civicrm_batch ON civicrm_entity_batch.batch_id = civicrm_batch.id 
+                  WHERE civicrm_entity_batch.entity_id = %1
+                    AND civicrm_entity_batch.entity_table = 'civicrm_contribution'
+                    AND civicrm_batch.type_id = %2";
+      $ga_batch_id = CRM_Core_DAO::singleValueQuery($query, array(
+        1 => array($contributionID, 'Integer'),
+        2 => array($giftAidBatchType, 'Integer')));
 
-      if ($batchContribution->find(TRUE)) {
+      if ($ga_batch_id) {
         $contributionsNotAdded[] = $contributionID;
         continue;
       }
