@@ -442,7 +442,8 @@ class CRM_Civigiftaid_Utils_Contribution {
      * this function returns the array of batchID & title
      */
   public static function getBatchIdTitle($orderBy = 'id') {
-    $query = "SELECT * FROM civicrm_batch ORDER BY " . $orderBy;
+    $ga_batch_type = (int) CRM_Civigiftaid_Utils_GiftAid::getBatchType();
+    $query = "SELECT * FROM civicrm_batch WHERE type_id = $ga_batch_type ORDER BY " . $orderBy;
     $dao =& CRM_Core_DAO::executeQuery($query);
 
     $result = array();
@@ -527,6 +528,7 @@ class CRM_Civigiftaid_Utils_Contribution {
     $contributionIdStr,
     array &$result
   ) {
+    $ga_batch_type = (int) CRM_Civigiftaid_Utils_GiftAid::getBatchType();
     $query = "
       SELECT  contribution.id, contact.id contact_id, contact.display_name, contribution.total_amount, contribution.currency,
               financial_type.name, contribution.source, contribution.receive_date, batch.title, batch.id as batch_id
@@ -534,7 +536,7 @@ class CRM_Civigiftaid_Utils_Contribution {
       LEFT JOIN civicrm_contact contact ON ( contribution.contact_id = contact.id )
       LEFT JOIN civicrm_financial_type financial_type ON ( financial_type.id = contribution.financial_type_id  )
       LEFT JOIN civicrm_entity_batch entity_batch ON ( entity_batch.entity_id = contribution.id )
-      LEFT JOIN civicrm_batch batch ON ( batch.id = entity_batch.batch_id )
+      LEFT JOIN civicrm_batch batch ON ( batch.id = entity_batch.batch_id AND batch.type_id = $ga_batch_type)
       WHERE contribution.id IN ({$contributionIdStr})";
 
     $dao = CRM_Core_DAO::executeQuery($query);
