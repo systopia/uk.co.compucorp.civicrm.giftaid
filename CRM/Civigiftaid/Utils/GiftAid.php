@@ -80,7 +80,7 @@ class CRM_Civigiftaid_Utils_GiftAid {
         // - if > 1, pick latest end_date
         $currentDeclaration = array();
         $sql = "
-        SELECT id, entity_id, eligible_for_gift_aid, start_date, end_date, reason_ended, source, notes, address, post_code
+        SELECT id, entity_id, eligible_for_gift_aid, start_date, end_date, reason_ended, source, notes, address, post_code, scanned_declaration
         FROM   civicrm_value_gift_aid_declaration
         WHERE  entity_id = %1 AND start_date <= %2 AND (end_date > %2 OR end_date IS NULL) {$charityClause}
         ORDER BY end_date DESC";
@@ -101,6 +101,7 @@ class CRM_Civigiftaid_Utils_GiftAid {
             $currentDeclaration['notes'] = $dao->notes;
             $currentDeclaration['address'] = $dao->address;
             $currentDeclaration['post_code'] = $dao->post_code;
+            $currentDeclaration['scanned_declaration'] = $dao->scanned_declaration;
         }
         //CRM_Core_Error::debug('currentDeclaration', $currentDeclaration);
         return $currentDeclaration;
